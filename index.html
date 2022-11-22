@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Colisões em 3D</title>
+		<meta charset=utf-8>
+		<meta name=viewport content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,0,0" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,0,0" />
+		<link rel="stylesheet" href="assets/css/style.css">
+	</head>
+
+	<body>
+
+		<div class="flexbox">
+			<div class="flexbox-container">
+				<div id="canvas" class="canvas"></div>
+				<div class="flexbox-timer">
+					<div class="timer">
+						<span id="minute">00</span>:<span id="second">00</span>:<span id="millisecond">000</span> s
+					</div>
+					<form name="form_main" class="form_main">				
+						<button type="button" name="start" id="start">START</button>
+						<button type="button" name="reset" id="reset">RESET</button>
+					</form>
+					<div class="timer">
+						<span id="energia"></span>
+					</div>
+					<div class="counter">
+						<span id="count"></span>
+						<button type="button" name="add" id="add" onclick="addBall()"><span class="material-symbols-outlined">
+							arrow_drop_up
+							</span></button>
+						<button type="button" name="remove" id="remove" onclick="removeBall()"><span class="material-icons-outlined"><span class="material-symbols-outlined">
+							arrow_drop_down
+							</span></button>
+					</div>
+					<div class="timer"><input type="checkbox" id="graph" name="graph" class="graph" onclick="showChart()">Mostrar gráfico</input></div>
+				</div>
+			</div>
+			<!-- <div class="mycanvas" id="mycanvas">
+				<canvas id="myChart"></canvas>
+			</div> -->
+		</div>
+
+		<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r100/build/three.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r100/examples/js/controls/OrbitControls.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script src="assets/js/script.js"></script>
+
+	</body>
+</html>
