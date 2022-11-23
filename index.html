@@ -8,10 +8,10 @@
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,0,0" />
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,0,0" />
 		<link rel="stylesheet" href="assets/css/style.css">
+		<link rel="stylesheet" href="assets/css/varModal.css">
 	</head>
 
 	<body>
-
 		<div class="flexbox">
 			<div class="flexbox-container">
 				<div id="canvas" class="canvas"></div>
@@ -19,22 +19,66 @@
 					<div class="timer">
 						<span id="minute">00</span>:<span id="second">00</span>:<span id="millisecond">000</span> s
 					</div>
-					<form name="form_main" class="form_main">				
-						<button type="button" name="start" id="start">START</button>
-						<button type="button" name="reset" id="reset">RESET</button>
-					</form>
 					<div class="timer">
 						<span id="energia"></span>
 					</div>
-					<div class="counter">
+					<div class="counter timer">
 						<span id="count"></span>
 					</div>
-					<div class="timer"><input type="checkbox" id="graph" name="graph" class="graph" onclick="showChart()">Mostrar gráfico</input></div>
+					<div class="timer">
+						<a href="#" class="button new graph" id="graph" name="graph" onclick="showChart()"">Mostrar gráfico</a>
+					</div>
+					<div class="timer">
+						<a href="#" class="button new" onclick="Modal.open()">Inserir variáveis</a>
+					</div>
+				</div>
+				<div class="">
+					<form name="form_main" class="form_main">				
+						<button type="button" name="start" id="start">START</button>
+						<button class="reset" type="button" name="reset" id="reset">RESET</button>
+					</form>
 				</div>
 			</div>
 			<!-- <div class="mycanvas" id="mycanvas">
 				<canvas id="myChart"></canvas>
 			</div> -->
+		</div>
+
+		<!-- MODAL -->
+		<div class="modal-overlay">
+			<div class="modal">
+				<div class="modal-content">
+					<div id="form">
+						<h2>Variáveis</h2>
+						<form id="varForm">
+							<div class="input-group">
+								<label class="sr-only" for="R"></label>
+								<input type="value" id="R" name="R" placeholder="R - Constante do gás ">
+							</div>
+	
+							<div class="input-group">
+								<label class="sr-only" for="T"></label>
+								<input type="value" id="T" name="T" placeholder="T - Temperatura absoluta do gás">
+							</div>
+	
+							<div class="input-group">
+								<label class="sr-only" for="M"></label>
+								<input type="value" id="M" name="M" placeholder="M - Massa molar">
+							</div>
+	
+							<div class="input-group">
+								<label class="sr-only" for="V"></label>
+								<input type="value" id="V" name="V" placeholder="V - Volume do gás">
+							</div>
+	
+							<div class="input-group actions">
+								<a onclick="Modal.close()" href="#" class="button cancel">Cancelar</a>
+								<button id="saveButton" onclick="Modal.close()">Salvar</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r100/build/three.min.js"></script>

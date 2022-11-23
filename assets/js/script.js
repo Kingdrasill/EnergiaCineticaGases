@@ -302,6 +302,34 @@ function restore() {
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
+// Pegando os valores das variáveis
+const Modal = {
+    open(){
+        //Abrir modal e adicionar classe 'active' ao modal
+        document
+            .querySelector('.modal-overlay')
+            .classList.add('active')
+    },
+    close(){
+        //Fechar modal e remover classe 'active' do modal
+        document
+            .querySelector('.modal-overlay')
+            .classList.remove('active')
+    }
+}
+
+//Salva as variáveis
+let saveButton = document.querySelector("#saveButton")
+saveButton.addEventListener("click", (event) => {
+    event.preventDefault()
+
+    let varForm = document.querySelector("#varForm")
+    console.log(varForm.R.value)
+    console.log(varForm.T.value)
+    console.log(varForm.M.value)
+    console.log(varForm.V.value)
+})
+
 /* // Criação de gráficos
 
 let mydata = [];

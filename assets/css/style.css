@@ -1,6 +1,39 @@
-body {
-    background-color: lightgray;
+:root{
+    --green: #49aa26;
+    --light-green: #3dd705;
+    --red: #e92929;
+    --black: #090909;
+    --gray: #8a8a8a;
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    font-size: 93.75%; /*15px*/
+}
+
+body{
+    background: #f0f2f5;
+    font-family: 'Poppins', sans-serif;
+}
+
+.sr-only{
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* --------------------------------------------------------  */
 
 .flexbox {
     display: flex;
@@ -21,7 +54,7 @@ body {
 }
 
 .flexbox-timer {
-    padding: 10px;
+    padding: 3.5rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -30,57 +63,35 @@ body {
 .canvas {
     width: 1000px;
     height: 700px;
-    background-color: black;
-    border: 5px gray solid;
+    background-color: var(--black);
+    border: 0.25rem var(--gray) solid;
+    border-radius: 0.4rem;
 }
 
 .form_main button {
-    margin: 10px;
-    padding: 10px;
-    font-size: 20px;
+    font-size: 1.25rem;
     display: inline;
-    border-radius: 20%;
-    box-shadow: 2px 2px 2px lightslategrey;
-    color: white;
+    border-radius: 1.5rem;
 }
 
-#start {
-    background-color: green;
+/* #start {
+    background-color: var(--green);
 }
 
 #reset {
-    background-color: black;
-}
+    background-color: var(--black);
+} */
 
 .timer {
-    margin: 10px;
-    font-family: arial, sans-serif;
-    padding: 10px;
-    font-size: 20px;
-    border: 2px black solid;
-    width: fit-content;
-    height: fit-content;
-    color: black;
-    background-color: white;
-}
+    margin: auto;
 
-#count {
-    padding: 10px;
-    font-size: 20px;
-    width: fit-content;
-    height: fit-content;
-    color: black;
-    border: 2px black solid;
-    background-color: white;
-}
+    padding: 1.125rem;
+    font-size: 1.25rem;
 
-.counter {
-    margin: 10px;
-    font-size: 20px;
-    width: fit-content;
-    height: fit-content;
-    font-family: arial, sans-serif;
-    color: black;
+    border-radius: 0.4rem;
+    
+    color: #fff;
+    background-color: var(--gray);
 }
 
 .counter button {
