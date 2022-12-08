@@ -221,17 +221,13 @@ function updateClock( t ) {
 
 // Método para começar e pausar o tempo
 function start() {
-    pause();
+    run = false;
+
     if (btStart.innerHTML == 'START') {
         btStart.innerHTML = 'STOP';
         btStart.setAttribute('style', 'background-color: red');
         run = true;
         scene.remove( axesHelper );
-        
-        let add = document.getElementById('add');
-        add.disabled = true;
-        let remove = document.getElementById('remove');
-        remove.disabled = true;
     } else if (btStart.innerHTML == 'STOP') {
         btStart.innerHTML = 'START';
         btStart.setAttribute('style', 'background-color: green');
@@ -239,18 +235,10 @@ function start() {
     }
 }
 
-function pause() {
-    run = false;
-    
-    let add = document.getElementById('add');
-    add.disabled = false;
-    let remove = document.getElementById('remove');
-    remove.disabled = false;
-}
-
 // Método para resetar a simulação
 function reset() {
-    pause();
+    run = false;
+
     if (btStart.innerHTML == 'STOP') {
         btStart.innerHTML = 'START';
         btStart.setAttribute('style', 'background-color: green');
