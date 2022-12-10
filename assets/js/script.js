@@ -25,7 +25,17 @@ let velocitiesInitials = []; // Vetor das velocidades iniciais das bolas
 let t = 0; // Tempo passado
 let dt = 1/ 60; // Instante de tempo
 
+/* -------------------- Váriaveis --------------------*/
 let energia = 0; // Energia cinética do sistema
+
+let gasConst; // Constante do gás
+let gasTemp; // Temperatura do gás
+let gasMassaMol; // Massa molar do gás
+let gasVolume; // Volume do gás
+
+let gasVelocidade; // Velocidade quadrática média de uma molécula do gás
+let gasFreeWay; //Livre caminho médio de uma molécula do gás
+/* ---------------------------------------------------*/
 
 let run = false; // Mover ou não
 
@@ -89,6 +99,44 @@ camera.add(light);
 var ambient = new THREE.AmbientLight(0x555555);
 scene.add(camera);
 scene.add(ambient);
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+// Pegando os valores das variáveis
+const Modal = {
+    open(){
+        //Abrir modal e adicionar classe 'active' ao modal
+        document
+            .querySelector('.modal-overlay')
+            .classList.add('active')
+    },
+    close(){
+        //Fechar modal e remover classe 'active' do modal
+        document
+            .querySelector('.modal-overlay')
+            .classList.remove('active')
+    }
+}
+
+//Salva as variáveis
+let saveButton = document.querySelector("#saveButton")
+saveButton.addEventListener("click", (event) => {
+    event.preventDefault()
+
+    let varForm = document.querySelector("#varForm")
+
+    gasConst = Number(varForm.R.value)
+    gasTemp = Number(varForm.T.value)
+    gasMassaMol = Number(varForm.M.value)
+    gasVolume = Number(varForm.V.value)
+
+    console.log(gasConst)
+    console.log(gasTemp)
+    console.log(gasMassaMol)
+    console.log(gasVolume)
+})
+
+/* ------------------------------------------------------------------------------------------------------------------ */
 
 // Cria as bolas iniciais
 for (var i = 0; i < count; i++) {
@@ -227,6 +275,13 @@ function start() {
         btStart.innerHTML = 'STOP';
         btStart.setAttribute('style', 'background-color: red');
         run = true;
+        
+        gasVelocidade = Math.sqrt((3*gasConst*gasTemp)/gasMassaMol)
+        console.log("Velocidade de uma molécula do gás:", gasVelocidade)
+
+        gasFreeWay = gasVolume/(4 * Math.PI * Math.sqrt(2) * (radius ** 2) * count)
+        console.log("Livre caminho médio de uma molécula do gás:", gasFreeWay)
+
         scene.remove( axesHelper );
     } else if (btStart.innerHTML == 'STOP') {
         btStart.innerHTML = 'START';
@@ -287,36 +342,6 @@ function restore() {
         b1.v.copy(velocitiesInitials[i]);
     }
 }
-
-/* ------------------------------------------------------------------------------------------------------------------ */
-
-// Pegando os valores das variáveis
-const Modal = {
-    open(){
-        //Abrir modal e adicionar classe 'active' ao modal
-        document
-            .querySelector('.modal-overlay')
-            .classList.add('active')
-    },
-    close(){
-        //Fechar modal e remover classe 'active' do modal
-        document
-            .querySelector('.modal-overlay')
-            .classList.remove('active')
-    }
-}
-
-//Salva as variáveis
-let saveButton = document.querySelector("#saveButton")
-saveButton.addEventListener("click", (event) => {
-    event.preventDefault()
-
-    let varForm = document.querySelector("#varForm")
-    console.log(varForm.R.value)
-    console.log(varForm.T.value)
-    console.log(varForm.M.value)
-    console.log(varForm.V.value)
-})
 
 /* // Criação de gráficos
 
