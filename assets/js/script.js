@@ -13,21 +13,20 @@ let height = canvas.offsetHeight - 10; // Height do canvas
 // Varaibles for setting render inicial
 var count = 500; // Número de bolas iniciais
 var radius = 0.025; // Raio das bolas
-var range = 3;  // Tamanho da caixa
+var range = 2;  // Tamanho da caixa
 let maxpos = range - radius; // Posição máxima possível de uma bola
-let maxvel = 100; // Velocidade 
 
 let balls = []; // Vetor que guarda as bolas e suas massas
 let positionsInitials = []; // Vetor das posições iniciais das bolas
 let velocitiesInitials = []; // Vetor das velocidades iniciais das bolas
 
 let t = 0; // Tempo passado
-let dt = 1/ 60; // Instante de tempo
+let dt = 1/ 6000; // Instante de tempo
 
 /* -------------------- Váriaveis --------------------*/
 let gasConst = 8.314; // Constante do gás
 let gasTemp = 298.15; // Temperatura do gás
-let gasMassaMol = 1.008 * (10 ** -3); // Massa molar do gás
+let gasMassaMol = 32 * (10 ** -3); // Massa molar do gás
 let gasVolume = (2*range) ** 3; // Volume do gás
 
 let gasVelocidade; // Velocidade quadrática média de uma molécula do gás
@@ -154,7 +153,7 @@ function setInitialValues() {
     input = document.getElementById('V');
     input.value = gasVolume;
 
-    gasVelocidade = ((3 * gasConst * gasTemp) / (gasMassaMol));
+    gasVelocidade = Math.sqrt((3 * gasConst * gasTemp) / (gasMassaMol));
     var mass = gasMassaMol / (6.02 * (10 ** 23));
 
     // Cria as bolas iniciais
