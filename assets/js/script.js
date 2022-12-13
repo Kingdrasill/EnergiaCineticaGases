@@ -367,7 +367,7 @@ let myChart =  new Chart();
 
 function createChart() {
     resetChart();
-    graficoCanvas.setAttribute('style', 'height: 700px');
+    graficoCanvas.setAttribute('style', 'height: 550px');
 
     let colisions = [];
     let velocities = [];
@@ -441,16 +441,19 @@ function createChart() {
         },
     };
 
+    document.querySelector('.list').classList.add('active')
+    document.querySelector('.divider').classList.add('active')
+
     myChart = new Chart(document.getElementById('myChart'),config);
 
     let text = document.getElementById('vrmq');
-    text.innerHTML = "Velocidade quadratíca média das moléculas do gás: " + gasVelocidade.toFixed(5) + " m/s";
+    text.innerHTML = "Velocidade quadratíca média das moléculas do gás: <span class=\"items\">" + gasVelocidade.toFixed(5) + " m/s</span>";
     
     text = document.getElementById('tmed');
-    text.innerHTML = "Tempo livre médio das moléculas do gás: " + gasTempo.toFixed(5) + " s";
+    text.innerHTML = "Tempo livre médio das moléculas do gás: <span class=\"items\">" + gasTempo.toFixed(5) + " s</span>";
     
     text = document.getElementById('livrecaminho');
-    text.innerHTML = "Caminho livre médio das moléculas do gás: " + gasFreeWay.toFixed(5) + " m";
+    text.innerHTML = "Caminho livre médio das moléculas do gás: <span class=\"items\">" + gasFreeWay.toFixed(5) + " m</span>";
     
     text = document.getElementById('datatmed');
     var media = 0;
@@ -458,7 +461,7 @@ function createChart() {
         media += (times[i] - times[i-1]);
     }
     media = media / (times.length-1);
-    text.innerHTML = "Tempo livre médio de uma molécula do gás : " + media.toFixed(5) + " s";
+    text.innerHTML = "Tempo livre médio de uma molécula do gás: <span class=\"items\">" + media.toFixed(5) + " s</span>";
     
     text = document.getElementById('datalivrecaminho');
     media = 0;
@@ -466,7 +469,7 @@ function createChart() {
         media += colisions[i];
     }
     media = media / (colisions.length-1);
-    text.innerHTML = "Caminho livre médio de uma molécula do gás : " + media.toFixed(5) + " m";
+    text.innerHTML = "Caminho livre médio de uma molécula do gás: <span class=\"items\">" + media.toFixed(5) + " m</span>";
 }
 
 function resetChart() {
