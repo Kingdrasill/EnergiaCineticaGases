@@ -29,6 +29,8 @@ let gasTemp = 298.15; // Temperatura do gás
 let gasMassaMol = 32 * (10 ** -3); // Massa molar do gás
 let gasVolume = (2*range) ** 3; // Volume do gás
 
+let execTime; // Tempo de execução
+
 let gasVelocidade; // Velocidade quadrática média de uma molécula do gás
 let gasFreeWay; //Livre caminho médio de uma molécula do gás
 /* ---------------------------------------------------*/
@@ -126,6 +128,7 @@ saveButton.addEventListener("click", (event) => {
     gasTemp = Number(varForm.T.value)
     gasMassaMol = Number(varForm.M.value)
     gasVolume = Number(varForm.V.value)
+    execTime = Number(varForm.tempo.value)
 
     if (gasVolume < 64){
         alert("O volume do gás não pode ser menor que 64m³.")
@@ -133,10 +136,10 @@ saveButton.addEventListener("click", (event) => {
         alert("Volume do gás igualado a 64m³.")
     }
 
-    console.log(gasConst)
-    console.log(gasTemp)
-    console.log(gasMassaMol)
-    console.log(gasVolume)
+    // console.log(gasConst)
+    // console.log(gasTemp)
+    // console.log(gasMassaMol)
+    // console.log(gasVolume)
 
     range = (gasVolume ** (1/3)) / 2;
     scene.remove(caixa);
