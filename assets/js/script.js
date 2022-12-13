@@ -4,8 +4,7 @@
 let btStart = document.getElementById('start'); // Botao start
 let counter = document.getElementById('count'); // Div contador das bolas
 let canvas = document.getElementById('canvas'); // Div canvas onde fica o 3D
-/* let grafico = document.getElementById('graph'); // Checkbox para mostrar ou não gráfico
-let graficoCanvas = document.getElementById('mycanvas'); // Div do gráfico */
+let graficoCanvas = document.getElementById('mycanvas'); // Div do gráfico
 
 let width = canvas.offsetWidth - 10; // Width do cnvas
 let height = canvas.offsetHeight - 10; // Height do canvas
@@ -20,6 +19,9 @@ let balls = []; // Vetor que guarda as bolas e suas massas
 let positionsInitials = []; // Vetor das posições iniciais das bolas
 let velocitiesInitials = []; // Vetor das velocidades iniciais das bolas
 
+let dataByTime = [];
+
+let livrecaminho = 0;
 let t = 0; // Tempo passado
 let dt = 1/ 6000; // Instante de tempo
 
@@ -28,10 +30,10 @@ let gasConst = 8.314; // Constante do gás
 let gasTemp = 298.15; // Temperatura do gás
 let gasMassaMol = 32 * (10 ** -3); // Massa molar do gás
 let gasVolume = (2*range) ** 3; // Volume do gás
-
-let execTime; // Tempo de execução
+let execTime = 1; // Tempo de execução
 
 let gasVelocidade; // Velocidade quadrática média de uma molécula do gás
+let gasTempo; // Tempo livre média das moléculas
 let gasFreeWay; //Livre caminho médio de uma molécula do gás
 /* ---------------------------------------------------*/
 
@@ -136,11 +138,6 @@ saveButton.addEventListener("click", (event) => {
         alert("Volume do gás igualado a 64m³.")
     }
 
-    // console.log(gasConst)
-    // console.log(gasTemp)
-    // console.log(gasMassaMol)
-    // console.log(gasVolume)
-
     range = (gasVolume ** (1/3)) / 2;
     scene.remove(caixa);
 
@@ -150,6 +147,29 @@ saveButton.addEventListener("click", (event) => {
     boxMesh = new THREE.Line(box);
     caixa = new THREE.BoxHelper(boxMesh, 'white');
     scene.add(caixa);
+
+    let input = document.getElementById('R');
+    input.value = gasConst;
+    input = document.getElementById('T');
+    input.value = gasTemp;
+    input = document.getElementById('M');
+    input.value = gasMassaMol;
+    input = document.getElementById('V');
+    input.value = gasVolume;
+    input = document.getElementById('tempo');
+    input.value = execTime;
+
+    gasVelocidade = Math.sqrt((3 * gasConst * gasTemp) / (gasMassaMol));
+    var mass = gasMassaMol / (6.02 * (10 ** 23));
+
+    velocitiesInitials.splice(0, velocitiesInitials.length);
+    for(var i=0; i<count; i++) {
+        var phi = (Math.PI / 180) * (Math.random() * 360);
+        var theta = (Math.PI / 180) * (Math.random() * 360);
+        balls[i][0].v =  new THREE.Vector3().setFromSphericalCoords(gasVelocidade, phi, theta);
+        velocitiesInitials.push(balls[i][0].v.clone());
+        balls[i][1] = mass;
+    }
 })
 
 function setInitialValues() {
@@ -161,6 +181,8 @@ function setInitialValues() {
     input.value = gasMassaMol;
     input = document.getElementById('V');
     input.value = gasVolume;
+    input = document.getElementById('tempo');
+    input.value = execTime;
 
     gasVelocidade = Math.sqrt((3 * gasConst * gasTemp) / (gasMassaMol));
     var mass = gasMassaMol / (6.02 * (10 ** 23));
@@ -240,10 +262,19 @@ function moveBalls(dt) {
 
                 b1.v = newv1;
                 b2.v = newv2;
+
+                if(b1.name == "ball0") {
+                    var colision = [livrecaminho, b1.v.clone().length(), t]
+                    dataByTime.push(colision);
+                    livrecaminho = 0;
+                }
             }
 
         }
         
+        if(b1.name == "ball0") {
+            livrecaminho += b1.v.clone().multiplyScalar(dt).length();
+        }
         b1.position.add(b1.v.clone().multiplyScalar(dt));
     }
 }
@@ -255,10 +286,13 @@ function render() {
     setTimeout( function() {requestAnimationFrame( render );}, 1000 / 60 );
     renderer.render(scene, camera);
 
-    if (run) {
+    if (run && t < execTime) {
         t += dt
         updateClock(t);
         moveBalls(dt);
+    } else if (t >= execTime) {
+        reset();
+        createChart();
     }
 }
 
@@ -284,11 +318,15 @@ function start() {
         btStart.setAttribute('style', 'background-color: red');
         run = true;
         
-        gasVelocidade = Math.sqrt((3*gasConst*gasTemp)/gasMassaMol)
-        console.log("Velocidade de uma molécula do gás:", gasVelocidade)
+        gasVelocidade = Math.sqrt((3*gasConst*gasTemp)/gasMassaMol);
+        gasTempo = gasVolume/(4 * Math.PI * Math.sqrt(2) * (radius ** 2) * gasVelocidade * count);
+        gasFreeWay = gasVolume/(4 * Math.PI * Math.sqrt(2) * (radius ** 2) * count);
 
-        gasFreeWay = gasVolume/(4 * Math.PI * Math.sqrt(2) * (radius ** 2) * count)
-        console.log("Livre caminho médio de uma molécula do gás:", gasFreeWay)
+        livrecaminho = 0;
+        dataByTime.splice(0, dataByTime.length);
+
+        var initial = [null , balls[0][0].v.clone().length(), 0];
+        dataByTime.push(initial);
 
         scene.remove( axesHelper );
     } else if (btStart.innerHTML == 'STOP') {
@@ -318,172 +356,56 @@ function reset() {
 function restore() {
     for(let i=0; i<count; i++) {
         var b1 = balls[i][0];
-        
-        balls[i][1] = radius*10;
 
         b1.position.copy(positionsInitials[i].clone());
         b1.v.copy(velocitiesInitials[i].clone());
     }
 }
 
-/* // Criação de gráficos
+// Criação de gráficos
+let myChart =  new Chart();
 
-let mydata = [];
-for(let i=0; i<count; i++) {
-    let ball = {
-        label: `${balls[i][0].name}`,
-        data: [{
-            x: t,
-            y: balls[i][0].v.length()
-        }],
-        backgroundColor: balls[i][0].material.color.getStyle(),
-        borderColor: balls[i][0].material.color.getStyle()
-    };
-    mydata.push(ball);
-}
+function createChart() {
+    resetChart();
+    graficoCanvas.setAttribute('style', 'height: 700px');
 
-let data = {
-    datasets: mydata,
-};
+    let colisions = [];
+    let velocities = [];
+    let times = [];
 
-let config = {
-    type: 'line',
-    data: data,
-    options: {
-        animation: {
-            duration: 0,
-        },
-        responsive: true,
-        scales: {
-            x: {
-                type: 'linear',
-                position: 'bottom',
-                title: {
-                    display: true,
-                    text: 'Tempo (s)',
-                    color: '#444',
-                    font: {
-                        size: 20,
-                        weight: 'bold',
-                    },
-                    padding: {top: 10, left: 0, right: 0, bottom: 0}
-                }
-            },
-            y: {
-                type: 'linear',
-                position: 'left',
-                title: {
-                    display: true,
-                    text: 'Módulo Velocidade (m/s)',
-                    color: '#444',
-                    font: {
-                        size: 20,
-                        weight: 'bold',
-                    },
-                    padding: {top: 0, left: 0, right: 0, bottom: 10}
-                }
-            }
-        },
-        plugins: {
-            legend: {
-            position: 'top',
-            },
-            title: {
-            display: true,
-            text: 'Módulo da velocidade das bolas em função do tempo'
-            }
-        }
-    },
-};
-
-let myChart = new Chart(document.getElementById('myChart'),config);
-
-function addBalltoChart( chart, ball ) {
-    let data = {
-        label: `${ball.name}`,
-        data: [{
-            x: t,
-            y: ball.v.length()
-        }],
-        backgroundColor: ball.material.color.getStyle(),
-        borderColor: ball.material.color.getStyle()
-    };
-
-    chart.data.datasets.push(data);
-    chart.update();
-    console.log(chart.data)
-}
-
-function removeBallfromChart( chart ) {
-    chart.data.datasets.pop();
-    chart.update();
-} 
-
-function addBallData( chart, ball ) {
-    let data = {
-        x: t,
-        y: ball.v.length()
-    };
-    chart.data.datasets.forEach(element => {
-        if(element.label == ball.name) 
-            element.data.push(data);
-    });
-    chart.update();
-}
-
-function updateBallColor(chart, ball) {
-    chart.data.datasets.forEach(element => {
-        if(element.label == ball.name) {
-            element.backgroundColor = ball.material.color.getStyle()
-            element.borderColor = ball.material.color.getStyle()
-        }
-    });
-    chart.update();
-}
-
-function updateBallVelocity(chart, ball) {
-    let data = {
-        x: t,
-        y: ball.v.length()
-    };
-    chart.data.datasets.forEach(element => {
-        if(element.label == ball.name) {
-            if(t == 0) {
-                element.data[0].y = ball.v.length()
-            } else if (t != 0) {
-                element.data.push(data);
-            }
-        }
-    });
-    chart.update();
-}
-
-function resetChart() {
-    myChart.destroy();
-    mydata = [];
-    for(let i=0; i<count; i++) {
-        let ball = {
-            label: `${balls[i][0].name}`,
-            data: [{
-                x: t,
-                y: balls[i][0].v.length()
-            }],
-            backgroundColor: balls[i][0].material.color.getStyle(),
-            borderColor: balls[i][0].material.color.getStyle()
-        };
-        mydata.push(ball);
+    for(var i=0; i<dataByTime.length; i++) {
+        colisions.push(dataByTime[i][0]);
+        velocities.push(dataByTime[i][1]);
+        times.push(dataByTime[i][2]);
     }
 
-    data = {
+    let mydata = [];
+    let col = {
+        label: `Distância sem colidir`,
+        data: colisions,
+        fill: false,
+        borderColor: "red"
+    }
+    let vel = {
+        label: `Velocidade`,
+        data: velocities,
+        fill: false,
+        borderColor: "green"
+    }
+    mydata.push(col)
+    mydata.push(vel);
+
+    let data = {
+        labels: times,
         datasets: mydata,
     };
 
-    config = {
+    let config = {
         type: 'line',
         data: data,
         options: {
             animation: {
-                duration: 0,
+                duration: 0.5,
             },
             responsive: true,
             scales: {
@@ -493,48 +415,71 @@ function resetChart() {
                     title: {
                         display: true,
                         text: 'Tempo (s)',
-                        color: '#444',
                         font: {
-                            size: 20,
+                            size: 16,
                             weight: 'bold',
                         },
                         padding: {top: 10, left: 0, right: 0, bottom: 0}
-                    }
-                },
-                y: {
-                    type: 'linear',
-                    position: 'left',
-                    title: {
-                        display: true,
-                        text: 'Módulo Velocidade (m/s)',
-                        color: '#444',
-                        font: {
-                            size: 20,
-                            weight: 'bold',
-                        },
-                        padding: {top: 0, left: 0, right: 0, bottom: 10}
                     }
                 }
             },
             plugins: {
                 legend: {
-                position: 'top',
+                    positon: 'top',
                 },
                 title: {
-                display: true,
-                text: 'Módulo da velocidade das bolas em função do tempo'
+                    display: true,
+                    text: 'Molécula vermelha durante o tempo',
+                    color: '#444',
+                    font: {
+                        size: 24,
+                        weight: 'bold',
+                    },
+                    padding: {top: 0, left: 0, right: 0, bottom: 10}
                 }
             }
         },
     };
 
     myChart = new Chart(document.getElementById('myChart'),config);
+
+    let text = document.getElementById('vrmq');
+    text.innerHTML = "Velocidade quadratíca média das moléculas do gás: " + gasVelocidade.toFixed(5) + " m/s";
+    
+    text = document.getElementById('tmed');
+    text.innerHTML = "Tempo livre médio das moléculas do gás: " + gasTempo.toFixed(5) + " s";
+    
+    text = document.getElementById('livrecaminho');
+    text.innerHTML = "Caminho livre médio das moléculas do gás: " + gasFreeWay.toFixed(5) + " m";
+    
+    text = document.getElementById('datatmed');
+    var media = 0;
+    for(var i=1; i<times.length; i++) {
+        media += (times[i] - times[i-1]);
+    }
+    media = media / (times.length-1);
+    text.innerHTML = "Tempo livre médio de uma molécula do gás : " + media.toFixed(5) + " s";
+    
+    text = document.getElementById('datalivrecaminho');
+    media = 0;
+    for(var i=1; i<colisions.length; i++) {
+        media += colisions[i];
+    }
+    media = media / (colisions.length-1);
+    text.innerHTML = "Caminho livre médio de uma molécula do gás : " + media.toFixed(5) + " m";
 }
 
-function showChart() {
-    if(grafico.checked) {
-        graficoCanvas.setAttribute('style', 'height: 500px');
-    } else {
-        graficoCanvas.setAttribute('style', 'height: 0');
-    }
-} */
+function resetChart() {
+    myChart.destroy();
+    graficoCanvas.setAttribute('style', 'height: 0');
+    let text = document.getElementById('vrmq');
+    text.innerHTML = "";
+    text = document.getElementById('tmed');
+    text.innerHTML = "";
+    text = document.getElementById('livrecaminho');
+    text.innerHTML = "";
+    text = document.getElementById('datatmed');
+    text.innerHTML = "";
+    text = document.getElementById('datalivrecaminho');
+    text.innerHTML = "";
+}

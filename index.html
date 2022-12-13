@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Colisões em 3D</title>
+		<title>Energia Cinética dos Gases</title>
 		<meta charset=utf-8>
 		<meta name=viewport content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -29,13 +29,18 @@
 				<div class="">
 					<form name="form_main" class="form_main">				
 						<button type="button" name="start" id="start">START</button>
-						<button class="reset" type="button" name="reset" id="reset">RESET</button>
+						<!-- <button class="reset" type="button" name="reset" id="reset">RESET</button> -->
 					</form>
 				</div>
 			</div>
-			<!-- <div class="mycanvas" id="mycanvas">
+			<div class="mycanvas" id="mycanvas">
+				<p id="vrmq"></p>
+				<p id="tmed"></p>
+				<p id="livrecaminho"></p>
 				<canvas id="myChart"></canvas>
-			</div> -->
+				<p id="datatmed"></p>
+				<p id="datalivrecaminho"></p>
+			</div>
 		</div>
 
 		<!-- MODAL -->
@@ -82,6 +87,7 @@
 
 		<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r100/build/three.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r100/examples/js/controls/OrbitControls.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script src="assets/js/script.js"></script>
 
 	</body>
