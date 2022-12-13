@@ -127,6 +127,12 @@ saveButton.addEventListener("click", (event) => {
     gasMassaMol = Number(varForm.M.value)
     gasVolume = Number(varForm.V.value)
 
+    if (gasVolume < 64){
+        alert("O volume do gás não pode ser menor que 64m³.")
+        gasVolume = 64
+        alert("Volume do gás igualado a 64m³.")
+    }
+
     console.log(gasConst)
     console.log(gasTemp)
     console.log(gasMassaMol)
