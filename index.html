@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="assets/css/varModal.css">
 	</head>
 
-	<body>
+	<body onload="setInitialValues()">
 		<div class="flexbox">
 			<div class="flexbox-container">
 				<div id="canvas" class="canvas"></div>
@@ -19,14 +19,8 @@
 					<div class="timer">
 						<span id="minute">00</span>:<span id="second">00</span>:<span id="millisecond">000</span> s
 					</div>
-					<div class="timer">
-						<span id="energia"></span>
-					</div>
 					<div class="counter timer">
-						<span id="count"></span>
-					</div>
-					<div class="timer">
-						<a href="#" class="button new graph" id="graph" name="graph" onclick="showChart()"">Mostrar gráfico</a>
+						<span id="count"></span> moléculas
 					</div>
 					<div class="timer">
 						<a href="#" class="button new" onclick="Modal.open()">Inserir variáveis</a>
@@ -52,23 +46,23 @@
 						<h2>Variáveis</h2>
 						<form id="varForm">
 							<div class="input-group">
-								<label class="sr-only" for="R"></label>
-								<input type="value" id="R" name="R" placeholder="R - Constante do gás ">
+								<label for="R">R - Constante do gás J/mol.K</label>
+								<input type="value" id="R" name="R">
 							</div>
 	
 							<div class="input-group">
-								<label class="sr-only" for="T"></label>
-								<input type="value" id="T" name="T" placeholder="T - Temperatura absoluta do gás">
+								<label for="T">T - Temperatura absoluta do gás K</label>
+								<input type="value" id="T" name="T">
 							</div>
 	
 							<div class="input-group">
-								<label class="sr-only" for="M"></label>
-								<input type="value" id="M" name="M" placeholder="M - Massa molar">
+								<label for="M">M - Massa molar kg/mol</label>
+								<input type="value" id="M" name="M">
 							</div>
 	
 							<div class="input-group">
-								<label class="sr-only" for="V"></label>
-								<input type="value" id="V" name="V" placeholder="V - Volume do gás">
+								<label for="V">V - Volume do gás m³</label>
+								<input type="value" id="V" name="V">
 							</div>
 	
 							<div class="input-group actions">
@@ -83,7 +77,6 @@
 
 		<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r100/build/three.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r100/examples/js/controls/OrbitControls.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script src="assets/js/script.js"></script>
 
 	</body>

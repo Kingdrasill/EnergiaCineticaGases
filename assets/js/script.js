@@ -2,7 +2,6 @@
 
 // Variavais do html
 let btStart = document.getElementById('start'); // Botao start
-let joules = document.getElementById('energia'); // Div de energia cinética 
 let counter = document.getElementById('count'); // Div contador das bolas
 let canvas = document.getElementById('canvas'); // Div canvas onde fica o 3D
 /* let grafico = document.getElementById('graph'); // Checkbox para mostrar ou não gráfico
@@ -13,10 +12,10 @@ let height = canvas.offsetHeight - 10; // Height do canvas
 
 // Varaibles for setting render inicial
 var count = 500; // Número de bolas iniciais
-var radius = 0.05; // Raio das bolas
+var radius = 0.025; // Raio das bolas
 var range = 3;  // Tamanho da caixa
 let maxpos = range - radius; // Posição máxima possível de uma bola
-let maxvel = 10; // Velocidade 
+let maxvel = 100; // Velocidade 
 
 let balls = []; // Vetor que guarda as bolas e suas massas
 let positionsInitials = []; // Vetor das posições iniciais das bolas
@@ -26,12 +25,10 @@ let t = 0; // Tempo passado
 let dt = 1/ 60; // Instante de tempo
 
 /* -------------------- Váriaveis --------------------*/
-let energia = 0; // Energia cinética do sistema
-
-let gasConst; // Constante do gás
-let gasTemp; // Temperatura do gás
-let gasMassaMol; // Massa molar do gás
-let gasVolume; // Volume do gás
+let gasConst = 8.314; // Constante do gás
+let gasTemp = 298.15; // Temperatura do gás
+let gasMassaMol = 1.008 * (10 ** -3); // Massa molar do gás
+let gasVolume = (2*range) ** 3; // Volume do gás
 
 let gasVelocidade; // Velocidade quadrática média de uma molécula do gás
 let gasFreeWay; //Livre caminho médio de uma molécula do gás
@@ -88,7 +85,8 @@ box.vertices.push(new THREE.Vector3(range, range, range));
 
 // Cria a malha da caixa
 var boxMesh = new THREE.Line(box);
-scene.add(new THREE.BoxHelper(boxMesh, 'white'));
+var caixa = new THREE.BoxHelper(boxMesh, 'white');
+scene.add(caixa);
 
 // Cria um fonte de luz na camera
 var light = new THREE.DirectionalLight(0xffffff, .8);
@@ -134,60 +132,73 @@ saveButton.addEventListener("click", (event) => {
     console.log(gasTemp)
     console.log(gasMassaMol)
     console.log(gasVolume)
+
+    range = (gasVolume ** (1/3)) / 2;
+    scene.remove(caixa);
+
+    box = new THREE.Geometry();
+    box.vertices.push(new THREE.Vector3(-range, -range, -range));
+    box.vertices.push(new THREE.Vector3(range, range, range));
+    boxMesh = new THREE.Line(box);
+    caixa = new THREE.BoxHelper(boxMesh, 'white');
+    scene.add(caixa);
 })
+
+function setInitialValues() {
+    let input = document.getElementById('R');
+    input.value = gasConst;
+    input = document.getElementById('T');
+    input.value = gasTemp;
+    input = document.getElementById('M');
+    input.value = gasMassaMol;
+    input = document.getElementById('V');
+    input.value = gasVolume;
+
+    gasVelocidade = ((3 * gasConst * gasTemp) / (gasMassaMol));
+    var mass = gasMassaMol / (6.02 * (10 ** 23));
+
+    // Cria as bolas iniciais
+    for (var i = 0; i < count; i++) {
+
+        // Cria uma esfera
+        var geometry = new THREE.SphereGeometry(radius, 20, 20);
+
+        // Cria o material da esfera
+        var material = new THREE.MeshPhongMaterial();
+        if(i > 0)
+            material.color = new THREE.Color().setHSL(0.67, 1, .5);
+        else
+            material.color = new THREE.Color().setHSL(0, 1, .5);
+
+        // Cria a bola
+        var ball = new THREE.Mesh(geometry, material);
+
+        // Consede uma posição aleatória para bola
+        ball.position.set( parseFloat((maxpos * (2 * Math.random() - 1)).toFixed(3)),
+            parseFloat((maxpos * (2 * Math.random() - 1)).toFixed(3)),
+            parseFloat((maxpos * (2 * Math.random() - 1)).toFixed(3)) );
+        positionsInitials.push(ball.position.clone());
+
+        // Consede uma velocidade aleatória para bola
+        var phi = (Math.PI / 180) * (Math.random() * 360);
+        var theta = (Math.PI / 180) * (Math.random() * 360);
+        ball.v =  new THREE.Vector3().setFromSphericalCoords(gasVelocidade, phi, theta);
+        velocitiesInitials.push(ball.v.clone());
+
+        // Consede um nome para bola 
+        ball.name = 'ball' + i;
+        
+        var ball2 = [ball, mass];
+        
+        balls.push(ball2);
+        scene.add(ball);
+    }
+}
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-// Cria as bolas iniciais
-for (var i = 0; i < count; i++) {
-
-    // Cria uma esfera
-    var geometry = new THREE.SphereGeometry(radius, 20, 20);
-
-    // Cria o material da esfera
-    var material = new THREE.MeshPhongMaterial();
-    if(i > 0)
-        material.color = new THREE.Color().setHSL(0.67, 1, .5);
-    else
-        material.color = new THREE.Color().setHSL(0, 1, .5);
-
-    // Cria a bola
-    var ball = new THREE.Mesh(geometry, material);
-
-    // Consede uma posição aleatória para bola
-    ball.position.set( parseFloat((maxpos * (2 * Math.random() - 1)).toFixed(3)),
-        parseFloat((maxpos * (2 * Math.random() - 1)).toFixed(3)),
-        parseFloat((maxpos * (2 * Math.random() - 1)).toFixed(3)) );
-    positionsInitials.push(ball.position.clone());
-
-    // Consede uma velocidade aleatória para bola
-    var speed = maxvel;
-    ball.v = new THREE.Vector3( parseFloat((speed * (2 * Math.random() - 1)).toFixed(3)),
-        parseFloat((speed * (2 * Math.random() - 1)).toFixed(3)),
-        parseFloat((speed * (2 * Math.random() - 1)).toFixed(3)) );
-    velocitiesInitials.push(ball.v.clone());
-
-    // Consede um nome para bola 
-    ball.name = 'ball' + i;
-
-    // Consede um massa para bola
-    var mass = radius * 10;
-    
-    var ball2 = [ball, mass];
-    
-    // Atualiza a energia cinética
-    energia += Math.pow(ball.v.clone().length(), 2) * mass / 2;
-    joules.innerHTML = energia.toFixed(3) + 'J';
-    
-    balls.push(ball2);
-    scene.add(ball);
-}
-
 // Mover e resolver colisões das bolas
-function moveBalls(dt) {
-    // Energia cinética 0
-    energia = 0;
-    
+function moveBalls(dt) {    
     for (var i = 0; i < count; i++) {
         // Pega uma bola
         var b1 = balls[i][0];
@@ -226,8 +237,6 @@ function moveBalls(dt) {
         }
         
         b1.position.add(b1.v.clone().multiplyScalar(dt));
-
-        energia += Math.pow(balls[i][0].v.clone().length(), 2) * balls[i][1] / 2;
     }
 }
 
@@ -242,15 +251,6 @@ function render() {
         t += dt
         updateClock(t);
         moveBalls(dt);
-        //atualiza += dt
-        /* if(atualiza >= 0.5 && grafico.checked) {
-            for(let i=0; i<count; i++) {
-                addBallData(myChart,balls[i][0])
-            }
-            atualiza = 0
-        } */
-        
-        joules.innerHTML = energia.toFixed(3) + 'J';
     }
 }
 
@@ -306,40 +306,15 @@ function reset() {
     restore();
 }
 
-// Remove todas setas na hora de mover as bolas
-function removeArrows() {
-    for (let i=0; i<count; i++) {
-        scene.remove(arrows[i]);
-    }
-}
-
-// Recria todas as setas na hora que pausar o tempo
-function recreateArrows() {
-    for (let i=0; i<count; i++) {
-        const dir = balls[i][0].v.clone().normalize();
-        const origin = balls[i][0].position.clone();
-        const length = balls[i][0].v.clone().length();
-        const hex = 0xffffff;
-
-        const arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
-        arrows[i] = arrowHelper;
-        scene.add(arrows[i]);
-    }
-}
-
 // Chamado na hora que o botão reset é apertado para retornar os dos iniciais das bolas
 function restore() {
     for(let i=0; i<count; i++) {
         var b1 = balls[i][0];
         
         balls[i][1] = radius*10;
-        /* let mass = document.getElementById('mass-'+b1.name);
-        mass.value = balls[i][1]; */
 
-        b1.position.x = positionsInitials[i].x;
-        b1.position.y = positionsInitials[i].y;
-        b1.position.z = positionsInitials[i].z;
-        b1.v.copy(velocitiesInitials[i]);
+        b1.position.copy(positionsInitials[i].clone());
+        b1.v.copy(velocitiesInitials[i].clone());
     }
 }
 
