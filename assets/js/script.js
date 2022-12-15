@@ -10,7 +10,7 @@ let width = canvas.offsetWidth - 10; // Width do cnvas
 let height = canvas.offsetHeight - 10; // Height do canvas
 
 // Varaibles for setting render inicial
-var count = 500; // Número de bolas iniciais
+var count = 1000; // Número de bolas iniciais
 var radius = 0.025; // Raio das bolas
 var range = 2;  // Tamanho da caixa
 let maxpos = range - radius; // Posição máxima possível de uma bola
@@ -300,13 +300,11 @@ render();
 
 // Método para atualizar o timer
 function updateClock( t ) {
-    let minute = document.getElementById('minute');
     let second = document.getElementById('second');
     let millisecond = document.getElementById('millisecond');
 
-    minute.innerHTML = Math.floor(t/60) >= 10 ? Math.floor((t/60)) : `0${Math.floor((t/60))}`;
     second.innerHTML = Math.floor(t%60) >= 10 ? Math.floor(t%60) : `0${Math.floor(t%60)}`;
-    millisecond.innerHTML = Math.floor((t*1000)%1000)-1 >= 100 ? Math.floor((t*1000)%1000)-1 : `0${Math.floor((t*1000)%1000)-1}`;
+    millisecond.innerHTML = Math.floor((t*1000)%1000)-1 >= 100 ? Math.floor((t*1000)%1000)-1 : Math.floor((t*1000)%1000)-1 >= 10 ? `0${Math.floor((t*1000)%1000)-1}` : `00${Math.floor((t*1000)%1000)-1}`;
 }
 
 // Método para começar e pausar o tempo
@@ -346,7 +344,6 @@ function reset() {
         scene.add( axesHelper );
     }
     t=0;
-    document.getElementById('minute').innerText = '00';
     document.getElementById('second').innerText = '00';
     document.getElementById('millisecond').innerText = '000';
     restore();
@@ -461,7 +458,7 @@ function createChart() {
         media += (times[i] - times[i-1]);
     }
     media = media / (times.length-1);
-    text.innerHTML = "Tempo livre médio de uma molécula do gás: <span class=\"items\">" + media.toFixed(5) + " s</span>";
+    text.innerHTML = "Tempo livre médio da molécula vermelha: <span class=\"items\">" + media.toFixed(5) + " s</span>";
     
     text = document.getElementById('datalivrecaminho');
     media = 0;
@@ -469,7 +466,7 @@ function createChart() {
         media += colisions[i];
     }
     media = media / (colisions.length-1);
-    text.innerHTML = "Caminho livre médio de uma molécula do gás: <span class=\"items\">" + media.toFixed(5) + " m</span>";
+    text.innerHTML = "Caminho livre médio da molécula vermelha: <span class=\"items\">" + media.toFixed(5) + " m</span>";
 }
 
 function resetChart() {
